@@ -3,19 +3,18 @@ import 'package:stck/StockObjects/materialRequest.dart';
 
 import 'package:stck/pages/api.dart';
 
-class ApprovedMaterialRequest extends StatefulWidget {
+class ReceivedMaterialsSent extends StatefulWidget {
   MaterialRequest materialrequest;
   String id;
 
-  ApprovedMaterialRequest(this.materialrequest, this.id);
+  ReceivedMaterialsSent(this.materialrequest, this.id);
 
   @override
-  _ApprovedMaterialRequestState createState() =>
-      _ApprovedMaterialRequestState();
+  _ReceivedMaterialsSentState createState() => _ReceivedMaterialsSentState();
 }
 
-class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
-  List<MaterialRequest> materialrequest;
+class _ReceivedMaterialsSentState extends State<ReceivedMaterialsSent> {
+  MaterialRequest materialrequests;
   List materials;
 
   @override
@@ -34,7 +33,7 @@ class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
             },
           ),
           backgroundColor: Color(0xFF00897B),
-          title: Text("APPROVE MATERIALS",
+          title: Text(widget.materialrequest.get_name().toUpperCase(),
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -61,22 +60,18 @@ class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Column(
+                  subtitle: Row(
                     children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: Text(
-                              rawMaterials[index].get_quantity() +
-                                  'mls.........................................................',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          rawMaterials[index].get_quantity() +
+                              'mls.....................................................',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -96,7 +91,7 @@ class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
               child: FlatButton(
                 onPressed: () async {
                   var id = widget.materialrequest.get_id();
-                  var response = await postApprovedMaterialRequest(id);
+                  var response = await postReceivedMaterial(id);
                   print(response);
 
                   if (response.containsKey('code')) {
@@ -112,7 +107,7 @@ class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
                   }
                 },
                 child: Text(
-                  'APPROVE MATERIALS',
+                  'APPROVE RECEIVED MATERIALS',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -121,11 +116,6 @@ class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
                 ),
               ),
             )),
-            Container(
-              width: 1,
-              height: 3,
-              color: Colors.grey,
-            ),
           ],
         )));
   }
@@ -141,10 +131,10 @@ class _ApprovedMaterialRequestState extends State<ApprovedMaterialRequest> {
               children: <Widget>[
                 Center(
                     child: Padding(
-                  padding: const EdgeInsets.only(left: 45),
+                  padding: const EdgeInsets.only(left: 40),
                   child: Center(
                     child: Text(
-                      'Materials approved',
+                      'Sent',
                       style: TextStyle(color: Color(0xFF00897B), fontSize: 20),
                     ),
                   ),

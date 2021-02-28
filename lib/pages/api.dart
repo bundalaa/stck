@@ -18,27 +18,27 @@ Future<Map<String, dynamic>> loginUser(
   return convertedDatatoJson;
 }
 
-//post prdctin request
-// Future postProductionRequest(String requestId) async {
-//   final response = await http.post(
-//     "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: json.encode({
-//       "code": "103",
-//       "api": "140",
-//       "user_id": userId,
-//       "data": {"request_id": requestId}
-//     }),
-//   );
-
-//   var convertedDatatoJson = jsonDecode(response.body);
-//   return convertedDatatoJson;
-// }
-
 //post prdctin material request
-Future postProductionMaterialRequest(String id) async {
+Future<Map<String, dynamic>> postMaterialRequest(String requestId) async {
+  final response = await http.post(
+    "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: json.encode({
+      "code": "104",
+      "api": "140",
+      "user_id": userId,
+      "data": {"request_id": requestId}
+    }),
+  );
+
+  var convertedDatatoJson = jsonDecode(response.body);
+  return convertedDatatoJson;
+}
+
+//post approved  material request
+Future postApprovedMaterialRequest(String id) async {
   final response = await http.post(
     "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
     headers: {
@@ -56,8 +56,27 @@ Future postProductionMaterialRequest(String id) async {
   return convertedDatatoJson;
 }
 
+//post received  material
+Future postReceivedMaterial(String id) async {
+  final response = await http.post(
+    "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: json.encode({
+      "code": "112",
+      "api": "140",
+      "user_id": userId,
+      "data": {"id": id}
+    }),
+  );
+
+  var convertedDatatoJson = jsonDecode(response.body);
+  return convertedDatatoJson;
+}
+
 //post complete production
-Future postCompleteProduction(String requestId) async {
+Future<Map<String, dynamic>> postCompleteProduction(String requestId) async {
   final response = await http.post(
     "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
     headers: {
@@ -66,25 +85,6 @@ Future postCompleteProduction(String requestId) async {
     body: json.encode({
       "code": "107",
       "api": "140",
-      "user_id": userId,
-      "data": {"request_id": requestId}
-    }),
-  );
-
-  var convertedDatatoJson = jsonDecode(response.body);
-  return convertedDatatoJson;
-}
-
-//post complete purchase note
-Future postCompletePurchasenote(String id) async {
-  final response = await http.post(
-    "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: json.encode({
-      "code": "109",
-      "api": "100",
       "user_id": userId,
       "data": {"request_id": requestId}
     }),

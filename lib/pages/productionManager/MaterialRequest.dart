@@ -4,19 +4,19 @@ import 'package:stck/StockObjects/request.dart';
 
 import 'package:stck/pages/api.dart';
 
-class ProductionAndMaterialRequest extends StatefulWidget {
+String requestId;
+
+class MaterialRequest extends StatefulWidget {
   Request request;
   String requestId;
 
-  ProductionAndMaterialRequest(this.request, this.requestId);
+  MaterialRequest(this.request, this.requestId);
 
   @override
-  _ProductionAndMaterialRequestState createState() =>
-      _ProductionAndMaterialRequestState();
+  _MaterialRequestState createState() => _MaterialRequestState();
 }
 
-class _ProductionAndMaterialRequestState
-    extends State<ProductionAndMaterialRequest> {
+class _MaterialRequestState extends State<MaterialRequest> {
   List<Request> requests;
   List materials;
 
@@ -157,13 +157,12 @@ class _ProductionAndMaterialRequestState
               child: FlatButton(
                 onPressed: () async {
                   var requestId = widget.request.get_request_id();
-                  var response = await postProductionMaterialRequest(requestId);
+                  var response = await postMaterialRequest(requestId);
                   print(response);
 
                   if (response.containsKey('code')) {
                     if (response['code'] == 200) {
                       requestId = response['request_id'];
-
                       showSuccessDialog();
                     } else {
                       setState(() {
@@ -233,7 +232,7 @@ class _ProductionAndMaterialRequestState
               children: <Widget>[
                 Center(
                     child: Padding(
-                  padding: const EdgeInsets.only(left: 30),
+                  padding: const EdgeInsets.only(left: 45),
                   child: Text(
                     'Request sent',
                     style: TextStyle(color: Color(0xFF00897B), fontSize: 20),

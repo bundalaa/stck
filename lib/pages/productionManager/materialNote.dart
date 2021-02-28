@@ -1,12 +1,17 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:stck/StockObjects/materialRequest.dart';
 import 'package:stck/jsonExtraction.dart';
+import 'package:stck/pages/api.dart';
+import 'package:stck/pages/productionManager/viewReceivedMaterialNoteMaterial.dart';
+import 'package:stck/pages/productionManager/viewSentMaterialNoteMaterial.dart';
 import 'package:stck/pages/signIn/sign_in.dart';
 import 'package:http/http.dart' as http;
 
+String id;
+
 class MaterialNote extends StatefulWidget {
+  MaterialRequest materialrequest;
   @override
   _MaterialNoteState createState() => _MaterialNoteState();
 }
@@ -123,37 +128,33 @@ class _MaterialNoteState extends State<MaterialNote> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: Card(
-                          child: ListTile(
-                            leading: Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
-                              child: Icon(Icons.send_and_archive),
-                            ),
-                            title: Text(
-                              rawmaterialsSent[index].get_name(),
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Row(
-                              children: [
-                                Text(
-                                  rawmaterialsSent[index].get_quantity() +
-                                      'litres',
-                                  style: TextStyle(
-                                    fontSize: 9,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ViewMaterialsSent(
+                                      sentmaterialrequests[index], id)));
+                            },
+                            child: ListTile(
+                              leading: Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Icon(Icons.send_and_archive),
+                              ),
+                              title: Text(
+                                sentmaterialrequests[index].get_name(),
+                                style: TextStyle(
+                                    fontSize: 15,
                                     color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     );
                   },
-                  itemCount:
-                      rawmaterialsSent == null ? 0 : rawmaterialsSent.length,
+                  itemCount: sentmaterialrequests == null
+                      ? 0
+                      : sentmaterialrequests.length,
                   separatorBuilder: (BuildContext context, int index) =>
                       Divider(),
                 ),
@@ -172,37 +173,29 @@ class _MaterialNoteState extends State<MaterialNote> {
                           ),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        child: ListTile(
-                          leading: Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
-                              child: Icon(Icons.notifications)),
-                          title: Text(
-                            rawmaterialsreceived[index].get_name(),
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 20),
-                                child: Text(
-                                  rawmaterialsreceived[index].get_quantity() +
-                                      'litres',
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ],
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ReceivedMaterialsSent(
+                                    receivedmaterialrequests[index], id)));
+                          },
+                          child: ListTile(
+                            leading: Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Icon(Icons.details_sharp)),
+                            title: Text(
+                              receivedmaterialrequests[index].get_name(),
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         )));
               },
-              itemCount: rawmaterialsreceived == null
+              itemCount: receivedmaterialrequests == null
                   ? 0
-                  : rawmaterialsreceived.length,
+                  : receivedmaterialrequests.length,
               separatorBuilder: (BuildContext context, int index) => Divider(),
             ),
           ],

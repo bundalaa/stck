@@ -1,5 +1,5 @@
 class Request {
-  String _request_id;
+  String request_id;
   String _productName;
   String _product_Id;
   String _quantity;
@@ -34,11 +34,11 @@ class Request {
   }
 
   String get_request_id() {
-    return this._request_id;
+    return this.request_id;
   }
 
   void set_request_id(String _request_id) {
-    this._request_id = _request_id;
+    this.request_id = _request_id;
   }
 
   String get_formula_id() {
@@ -82,7 +82,7 @@ class Request {
   }
 
   Request(
-      this._request_id,
+      this.request_id,
       this._productName,
       this._product_Id,
       this._registered,

@@ -53,7 +53,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
     final response = await http.post(
         "http://ec2-13-58-137-105.us-east-2.compute.amazonaws.com/GraceProduction/index.php/Api",
         headers: {'accept': 'application/json'},
-        body: {"code": "109", "api": "140", "user_id": userId});
+        body: {"code": "110", "api": "140", "user_id": userId});
 
     debugPrint(response.body);
     String serverResponse = response.body;
@@ -105,77 +105,208 @@ class _StoreHomePageState extends State<StoreHomePage> {
     return DefaultTabController(
         length: 3,
         child: Scaffold(
-            appBar: AppBar(
-                automaticallyImplyLeading: false,
-                backgroundColor: Color(0xFF00897B),
-                title: Column(children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Icon(
-                          Icons.home,
-                          color: Colors.white,
+          appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Color(0xFF00897B),
+              title: Column(children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'STORE',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
+              ]),
+              actions: [
+                Row(
+                  children: [
+                    IconButton(
+                        color: Colors.white,
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SearchMaterial()));
+                        }),
+                    nomalPopMenu()
+                  ],
+                )
+              ],
+              bottom: TabBar(
+                indicatorColor: Colors.white,
+                tabs: <Widget>[
+                  Tab(
+                    text: 'PRODUCTS',
+                  ),
+                  Tab(
+                    text: 'MATERIALS',
+                  ),
+                  Tab(
+                    text: 'REQUESTS',
+                  ),
+                ],
+              )),
+          body: TabBarView(children: [
+            Expanded(
+              child: SizedBox(
+                height: 200,
+                child: RefreshIndicator(
+                  onRefresh: getJsonData,
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only(left: 5, top: 5, right: 5),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ProductionDetails(
+                                      category: productdata[index]['category'],
+                                      name: productdata[index]['name'],
+                                      quantity: productdata[index]['quantity'],
+                                      price: productdata[index]['price'],
+                                    )));
+                          },
+                          child: Container(
+                            height: 70,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color(0xFF00897B),
+                              ),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ListTile(
+                              title: Row(
+                                children: [
+                                  Text(
+                                    'Product Name:  ',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                  Text(
+                                    productdata[index]['name'],
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              subtitle: Row(children: [
+                                Text(
+                                  'Category:  ',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                                Text(
+                                  productdata[index]['category'],
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ]),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: productdata == null ? 0 : productdata.length,
+                    separatorBuilder: (BuildContext context, int index) =>
+                        Divider(),
+                  ),
+                ),
+              ),
+            ),
+            (Container(
+              child: ListView.separated(
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 5, top: 5, right: 5),
+                    child: Card(
+                      child: Container(
+                        height: 60,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0xFF00897B),
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: ListTile(
+                          onTap: () {
+                            setState(() {
+                              alertDialog(context,
+                                  rawMaterialProvider.rawMaterials[index],
+                                  purchaseProvider: purchaseProvider);
+                            });
+                          },
+                          title: Row(
+                            children: [
+                              Text(
+                                'name: ',
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                rawMaterialProvider.rawMaterials[index].name,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          subtitle: Row(children: [
+                            Text(
+                              'Quantity: ',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              rawMaterialProvider.rawMaterials[index].quantity,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ]),
                         ),
                       ),
-                      Text(
-                        'STORE',
-                        style: TextStyle(color: Colors.white),
-                      )
-                    ],
-                  ),
-                ]),
-                actions: [
-                  Row(
-                    children: [
-                      IconButton(
-                          color: Colors.white,
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SearchMaterial()));
-                          }),
-                      nomalPopMenu()
-                    ],
-                  )
-                ],
-                bottom: TabBar(
-                  indicatorColor: Colors.white,
-                  tabs: <Widget>[
-                    Tab(
-                      text: 'PRODUCTS',
                     ),
-                    Tab(
-                      text: 'MATERIALS',
-                    ),
-                    Tab(
-                      text: 'REQUESTS',
-                    ),
-                  ],
-                )),
-            body: TabBarView(children: [
-              Expanded(
-                child: SizedBox(
-                  height: 200,
-                  child: RefreshIndicator(
-                    onRefresh: getJsonData,
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding:
-                              const EdgeInsets.only(left: 5, top: 5, right: 5),
-                          child: InkWell(
+                  );
+                },
+                itemCount: rawMaterialProvider.rawMaterials.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(),
+              ),
+            )),
+            (Container(
+              child: RefreshIndicator(
+                onRefresh: getMaterialRequest,
+                child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                        padding:
+                            const EdgeInsets.only(left: 5, top: 5, right: 5),
+                        child: InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ProductionDetails(
-                                        category: productdata[index]
-                                            ['category'],
-                                        name: productdata[index]['name'],
-                                        quantity: productdata[index]
-                                            ['quantity'],
-                                        price: productdata[index]['price'],
-                                      )));
+                                  builder: (context) => ApprovedMaterialRequest(
+                                      materialrequests[index], id)));
                             },
                             child: Container(
                               height: 70,
@@ -187,185 +318,51 @@ class _StoreHomePageState extends State<StoreHomePage> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ListTile(
-                                title: Row(
-                                  children: [
-                                    Text(
-                                      'Product Name:  ',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                    ),
-                                    Text(
-                                      productdata[index]['name'],
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                                subtitle: Row(children: [
-                                  Text(
-                                    'Category:  ',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black),
-                                  ),
-                                  Text(
-                                    productdata[index]['category'],
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ]),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: productdata == null ? 0 : productdata.length,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          Divider(),
-                    ),
-                  ),
-                ),
-              ),
-              (Container(
-                child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 5, top: 5, right: 5),
-                      child: Card(
-                        child: Container(
-                          height: 60,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color(0xFF00897B),
-                            ),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                alertDialog(context,
-                                    rawMaterialProvider.rawMaterials[index],
-                                    purchaseProvider: purchaseProvider);
-                              });
-                            },
-                            title: Row(
-                              children: [
-                                Text(
-                                  'name: ',
+                                leading: Icon(Icons.notification_important,
+                                    color: Colors.black),
+                                title: Text(
+                                  materialrequests[index].get_name(),
                                   style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  rawMaterialProvider.rawMaterials[index].name,
-                                  style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 12,
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
-                              ],
-                            ),
-                            subtitle: Row(children: [
-                              Text(
-                                'Quantity: ',
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold),
+                                trailing: Text(
+                                  materialrequests[index].get_status(),
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.black38,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                //
                               ),
-                              Text(
-                                rawMaterialProvider
-                                    .rawMaterials[index].quantity,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ]),
-                          ),
-                        ),
-                      ),
-                    );
+                            )));
                   },
-                  itemCount: rawMaterialProvider.rawMaterials.length,
+                  itemCount:
+                      materialrequests == null ? 0 : materialrequests.length,
                   separatorBuilder: (BuildContext context, int index) =>
                       Divider(),
                 ),
-              )),
-              (Container(
-                child: RefreshIndicator(
-                  onRefresh: getMaterialRequest,
-                  child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding:
-                              const EdgeInsets.only(left: 5, top: 5, right: 5),
-                          child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        ApprovedMaterialRequest(
-                                            materialrequests[index], id)));
-                              },
-                              child: Container(
-                                height: 70,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Color(0xFF00897B),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: ListTile(
-                                  leading: Icon(Icons.notification_important,
-                                      color: Colors.black),
-                                  title: Text(
-                                    'click for material request',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  trailing: Text(
-                                    materialrequests[index].get_status(),
-                                    style: TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.black38,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  //
-                                ),
-                              )));
-                    },
-                    itemCount:
-                        materialrequests == null ? 0 : materialrequests.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        Divider(),
-                  ),
-                ),
-              ))
-            ]),
-            bottomNavigationBar: BottomAppBar(
-                child: Container(
-              color: Color(0xFF00897B),
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              PurchaseSummary()));
-                },
-                child: Icon(Icons.arrow_forward_ios,
-                    size: 30, color: Colors.white),
               ),
-            ))));
+            ))
+          ]),
+          // bottomNavigationBar: BottomAppBar(
+          //     child: Container(
+          //   color: Color(0xFF00897B),
+          //   child: FlatButton(
+          //     onPressed: () {
+          //       Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //               builder: (BuildContext context) =>
+          //                   PurchaseSummary()));
+          //     },
+          //     child: Icon(Icons.arrow_forward_ios,
+          //         size: 30, color: Colors.white),
+          //   ),
+          // )
+          // )
+        ));
   }
 
   //  Dialog of fill quantity

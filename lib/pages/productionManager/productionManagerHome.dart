@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:stck/StockObjects/processingProduction.dart';
 import 'package:stck/StockObjects/request.dart';
-import 'package:stck/constants/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:stck/jsonExtraction.dart';
 import 'package:stck/pages/api.dart';
-import 'package:stck/pages/productionManager/Production&MaterialRequest.dart';
+import 'package:stck/pages/productionManager/MaterialRequest.dart';
 import 'package:stck/pages/productionManager/materialNote.dart';
 import 'package:stck/pages/signIn/sign_in.dart';
 
@@ -19,10 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _value = 1;
-  List<Request> requests;
+  List<Request> requests = [];
   List<ProcessingProduction> products;
-  bool presscomplete = false;
-  bool pressIncomplete = false;
   List materials;
 
   //get prdctin request
@@ -131,9 +128,8 @@ class _HomePageState extends State<HomePage> {
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductionAndMaterialRequest(
-                                          requests[index], requestId)));
+                                  builder: (context) => MaterialRequest(
+                                      requests[index], requestId)));
                             },
                             child: Card(
                               child: ListTile(
@@ -237,70 +233,20 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              trailing:
-                                  //  Column(
-                                  //   children: [
-                                  // FlatButton(
-                                  //     // shape: new RoundedRectangleBorder(
-                                  //     //     borderRadius:
-                                  //     //         new BorderRadius.circular(18.0),
-                                  //     //     side: BorderSide(color: Colors.grey)),
-                                  //     color: presscomplete
-                                  //         ? Color(0xFF00897B)
-                                  //         : Colors.grey,
-                                  //     textColor: Colors.white,
-                                  //     child: pressIncomplete
-                                  //         ? Text("complete")
-                                  //         : Text("Incomplete"),
-                                  //     //    style: TextStyle(fontSize: 14)
-                                  //     onPressed: () {
-                                  //       setState(() async {
-                                  //         var requestId =
-                                  //             products[index].get_requestId();
-                                  //         var response =
-                                  //             await postCompleteProduction(
-                                  //                 requestId);
-                                  //         print(response);
-
-                                  //         if (response.containsKey('code')) {
-                                  //           if (response['code'] == 200) {
-                                  //             requestId =
-                                  //                 response['request_id'];
-                                  //             presscomplete = !presscomplete;
-                                  //           } else {
-                                  //             setState(() {
-                                  //               print('Failed');
-                                  //             });
-                                  //           }
-                                  //         }
-                                  //         pressIncomplete = !pressIncomplete;
-                                  //       });
-                                  //     }),
-                                  //     InkWell(
-                                  //       onTap: () {
-                                  //         Navigator.pushNamed(
-                                  //             context, storeKeeperHome);
-                                  //       },
-                                  //       child: Image(
-                                  //           image: AssetImage(
-                                  //               'assets/icons/note.png')),
-                                  //     )
-                                  //   ],
-                                  // )
-                                  Padding(
-                                      padding: const EdgeInsets.only(top: 25.0),
-                                      child: Container(
-                                          height: 17,
-                                          width: 17,
-                                          child: InkWell(
-                                            onTap: () {
-                                              // Navigator.pushNamed(
-                                              //     context, storeKeeperHome);
-                                            },
-                                            child: Image(
-                                                image: AssetImage(
-                                                    'assets/icons/note.png')),
-                                          ))),
+                              trailing: Padding(
+                                  padding: const EdgeInsets.only(top: 25.0),
+                                  child: Container(
+                                      height: 17,
+                                      width: 17,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          showSuccessDialog(
+                                              context, requests[index]);
+                                        },
+                                        child: Image(
+                                            image: AssetImage(
+                                                'assets/icons/note.png')),
+                                      ))),
                             )));
                   },
                   itemCount: products == null ? 0 : products.length,
@@ -369,5 +315,109 @@ class _HomePageState extends State<HomePage> {
         color: Colors.white,
       ),
     );
+  }
+
+  Future<void> showSuccessDialog(BuildContext context, Request request) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return SingleChildScrollView(
+              child: ListBody(
+            children: <Widget>[
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Center(
+                  child: Text(
+                    'Are you want to approve product completion',
+                    style: TextStyle(color: Color(0xFF00897B), fontSize: 20),
+                  ),
+                ),
+              )),
+              SizedBox(height: 20),
+              Icon(
+                Icons.check_box,
+                size: 50,
+              ),
+              //     ],
+              // actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 40),
+                child: Row(
+                  children: [
+                    TextButton(
+                      child: Card(
+                        child: Container(
+                            height: 30,
+                            width: 55,
+                            child: Center(
+                              child: Text(
+                                'NO',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Card(
+                        child: Container(
+                            height: 30,
+                            width: 55,
+                            child: Center(
+                              child: Text(
+                                'YES',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )),
+                      ),
+                      onPressed: () async {
+                        var requestId = request.request_id;
+                        var response = await postCompleteProduction(requestId);
+                        print(response);
+
+                        if (response.containsKey('code')) {
+                          if (response['code'] == 200) {
+                            requestId = response['request_id'];
+                            Navigator.of(context).pop();
+                            _approveProductCompletion(context);
+                          } else {
+                            setState(() {
+                              print('Failed');
+                            });
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ));
+        }));
+      },
+    );
+  }
+
+  _approveProductCompletion(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                  leading: new Icon(Icons.approval),
+                  title: new Text('Production complete'),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
