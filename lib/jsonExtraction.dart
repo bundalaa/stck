@@ -35,7 +35,7 @@ class JsonExtraction {
           request['request_id'],
           request['product_name'],
           request['product_id'],
-          "${duration.inMinutes} mins ago",
+          "${duration.inDays} days ago",
           request['formula_id'],
           request['quantity'],
           request['status'],
