@@ -28,20 +28,21 @@ class JsonExtraction {
             material['price']));
       }
 
-      DateTime registered = DateTime.parse(request['registered']);
-      Duration duration = DateTime.now().difference(registered);
+      // DateTime registered = DateTime.parse(request['registered']);
+      // Duration duration = DateTime.now().difference(registered);
 
       requests.add(new Request(
           request['request_id'],
           request['product_name'],
           request['product_id'],
-          "${duration.inDays} days ago",
+          request['registered'],
           request['formula_id'],
           request['quantity'],
           request['status'],
           request['total'],
           materials));
     }
+
     return requests;
   }
 
@@ -112,6 +113,7 @@ class JsonExtraction {
           materialrequest['name'],
           materialrequest['request_id'],
           materialrequest['status'],
+          materialrequest['registered'],
           materials));
     }
     return materialrequests;

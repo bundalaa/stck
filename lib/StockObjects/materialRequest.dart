@@ -1,19 +1,11 @@
 class MaterialRequest {
   String _id;
-
-  String _name;
-
-  String get_name() {
-    return this._name;
-  }
-
-  void set_name(String _name) {
-    this._name = _name;
-  }
-
   String _request_id;
+  String _name;
+  String _registered;
   String _status;
   List materials;
+
   String get_id() {
     return this._id;
   }
@@ -28,6 +20,22 @@ class MaterialRequest {
 
   void set_request_id(String _request_id) {
     this._request_id = _request_id;
+  }
+
+  String get_name() {
+    return this._name;
+  }
+
+  void set_name(String _name) {
+    this._name = _name;
+  }
+
+  String get_registered() {
+    return this._registered;
+  }
+
+  void set_registered(String _registered) {
+    this._registered = _registered;
   }
 
   String get_status() {
@@ -46,8 +54,8 @@ class MaterialRequest {
     this.materials = materials;
   }
 
-  MaterialRequest(
-      this._id, this._name, this._request_id, this._status, this.materials);
+  MaterialRequest(this._id, this._name, this._request_id, this._status,
+      this._registered, this.materials);
 }
 
 class RMaterial {
